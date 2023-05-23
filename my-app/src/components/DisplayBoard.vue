@@ -1,8 +1,8 @@
 <template>
     <div class="display-board">
-        <h4>Shipments Registered</h4>
+        <h4>Deliveries Registered</h4>
         <div class="number">
-        {{numberOfShipments}}
+        {{numberOfDeliveries}}
         </div>
         <div class="btn">
             <button @click='refresh()' type="button" class="btn btn-warning">Refresh</button>
@@ -14,14 +14,14 @@
 
     export default {
         name: 'DisplayBoard',
-        props: ['numberOfShipments'],
+        props: ['numberOfDeliveries'],
         methods: {
             refresh(){
-                this.$emit('getAllShipments')
+                this.$emit('getAllDeliveries')
                 this.$emit('getCurrentStock')
             },
-            getAllShipments() {
-                this.$emit('getAllShipments')
+            getAllDeliveries() {
+                this.$emit('getAllDeliveries')
             },
             getCurrentStock() {
                 this.$emit('getCurrentStock')

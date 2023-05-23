@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-         Delivery Panel
+         Shipment Panel
     </div>
 </template>
 
