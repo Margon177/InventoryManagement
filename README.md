@@ -5,7 +5,7 @@ This system will be used to register stock deliveries, maintain current stock an
 
 ## Steps to run application
 
-## Api setup
+## API Setup
 
 ```
 cd api

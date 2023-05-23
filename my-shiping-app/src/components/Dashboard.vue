@@ -4,18 +4,18 @@
     <div class="container mrgnbtm">
           <div class="row">
             <div class="col-md-8">
-                <CreateDelivery @createDelivery="deliveryCreate($event)" />
+                <CreateShipment @createShipment="shipmentCreate($event)" />
             </div>
             <div class="col-md-4">
-                <DisplayBoard :numberOfDeliveries="numberOfDeliveries"
-                 @getAllDeliveries="getAllDeliveries()"
+                <DisplayBoard :numberOfShipments="numberOfShipments"
+                 @getAllShipments="getAllShipments()"
                  @getCurrentStock="$event => getCurrentStock()"
                  />
             </div>
           </div>
     </div>
     <div class="row mrgnbtm">
-        <Deliveries v-if="deliveries.length > 0" :deliveries="deliveries" />
+        <Shipments v-if="shipments.length > 0" :shipments="shipments" />
     </div>
     <div class="row mrgnbtm">
         <CurrentStock v-if="currentStock.length > 0" :currentStock="currentStock" />
@@ -25,35 +25,35 @@
 
 <script>
 import Header from './Header.vue'
-import CreateDelivery from './CreateDelivery.vue'
+import CreateShipment from './CreateShipment.vue'
 import DisplayBoard from './DisplayBoard.vue'
-import Deliveries from './Deliveries.vue'
+import Shipments from './Shipments.vue'
 import CurrentStock from './CurrentStock.vue'
-import { getAllDeliveries, createDelivery, getCurrentStock } from '../services/DeliveryService'
+import { getAllShipments, createShipment, getCurrentStock } from '../services/ShipmentService'
 
 export default {
   name: 'Dashboard',
   components: {
     Header,
-    CreateDelivery,
+    CreateShipment,
     DisplayBoard,
-    Deliveries,
+    Shipments,
     CurrentStock,
-    createDelivery
+    createShipment
 },
   data() {
       return {
-          deliveries: [],
-          numberOfDeliveries: 0,
+          shipments: [],
+          numberOfShipments: 0,
           currentStock: []
       }
   },
   methods: {
-    getAllDeliveries() {
-      getAllDeliveries().then(response => {
+    getAllShipments() {
+      getAllShipments().then(response => {
         console.log(response)
-        this.deliveries = response
-        this.numberOfDeliveries = this.deliveries.length
+        this.shipments = response
+        this.numberOfShipments = this.shipments.length
       })
     },
 
@@ -64,18 +64,18 @@ export default {
       })
     },
 
-    deliveryCreate(data) {
+    shipmentCreate(data) {
       console.log('data:::', data)
-      createDelivery(data).then(response => {
+      createShipment(data).then(response => {
         console.log(response);
-        this.getAllDeliveries();
+        this.getAllShipments();
         this.getCurrentStock();
       });
     }
   },
 
   mounted () {
-    this.getAllDeliveries();
+    this.getAllShipments();
     this.getCurrentStock();
   }
 }

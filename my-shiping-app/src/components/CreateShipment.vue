@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
         <div class="col-md-7 mrgnbtm">
-        <h2>Create Delivery</h2>
+        <h2>Create Shipment</h2>
             <form>
                 <div class="row">
                     <div class="form-group col-md-6">
@@ -11,15 +11,15 @@
                     </div>
                     
                     <div class="form-group col-md-6">
-                        <label htmlFor="exampleInputPassword1">Delivery Date</label>
-                        <input type="date" class="form-control" v-model="date" name="date" id="date" placeholder="Delivery Date" />
+                        <label htmlFor="exampleInputPassword1">Shipment Date</label>
+                        <input type="date" class="form-control" v-model="date" name="date" id="date" placeholder="Shipment Date" />
                     </div>
                     
                 </div>
                 <div class="row">
                     <div class="form-group col-md-6">
-                        <label htmlFor="exampleInputEmail1">Supplier Code</label>
-                        <input type="text" class="form-control" v-model="supplier" name="supplier" id="supplier" aria-describedby="emailHelp" placeholder="Supplier Code" />
+                        <label htmlFor="exampleInputEmail1">Customer Code</label>
+                        <input type="text" class="form-control" v-model="customer" name="customer" id="customer" aria-describedby="emailHelp" placeholder="Customer Code" />
                     </div>
                     <div class="form-group col-md-6">
                     <label htmlFor="items">Item Name</label>
@@ -36,7 +36,7 @@
                         <input type="number" class="form-control" v-model="qty" name="qty" id="qty" aria-describedby="emailHelp" placeholder="Quantity"/>
                     </div>
                 </div>
-                <button type="button" @click='createDelivery()' class="btn btn-danger">Create</button>
+                <button type="button" @click='createShipment()' class="btn btn-danger">Create</button>
             </form>
         </div>
     </div>
@@ -45,14 +45,14 @@
 
 <script>
 export default {
-  name: 'CreateDelivery',
+  name: 'CreateShipment',
   data() {
     return {
       invNo: '',
       date: '',
       item: '',
       selectedValue: '',
-      supplier: '',
+      customer: '',
       qty: '',
       status: '',
       arrayOfItems: [ {
@@ -73,25 +73,25 @@ export default {
 
   methods: {
 
-      createDelivery() {
+      createShipment() {
           console.log(this.id)
           const payload = {
               id: this.id,
               date: this.date,
               invNo: this.invNo,
-              supplier: this.supplier,
+              customer: this.customer,
               item: this.item,
               qty: this.qty,
               status: "NEW"
           }
-          this.$emit('createDelivery', payload)
+          this.$emit('createShipment', payload)
           this.clearForm();
       },
       clearForm() {
           this.invNo = "";
           this.date = "";
           this.item = "";
-          this.supplier = "";
+          this.customer = "";
           this.qty = 0;
           this.status = "";
           this.selectedValue = "";
