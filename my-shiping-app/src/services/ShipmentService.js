@@ -13,6 +13,6 @@ export async function getCurrentStock() {
 }
 
 export async function createShipment(data) {
-    const response = await axios.post(`/api/shipment`, {delivery: data});
+    const response = await axios.post(`/api/shipment`, {shipment: data});
     return response.data;
 }

@@ -14,7 +14,7 @@
             </tr>
             </thead>
             <tbody>
-              <tr v-for="item in deliveries" :key="item.id">
+              <tr v-for="item in shipments" :key="item.id">
                   <td>{{ item.id }}</td>
                   <td>{{ item.date }}</td>
                   <td>{{ item.invNo }}</td>
@@ -22,6 +22,11 @@
                   <td>{{ item.item }}</td>
                   <td>{{ item.qty }}</td>
                   <td>{{ item.status }}</td>
+                  <td v-if="item.status == 'APPROVED' " align="center">
+                        <button class="btn btn-info">
+                            Invoice
+                        </button>
+                  </td>
               </tr>
             </tbody>
         </table>
@@ -34,4 +39,5 @@
         name: 'Shipments',
         props: ['shipments']
      }
+
 </script>

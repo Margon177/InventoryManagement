@@ -13,7 +13,9 @@
     "bootstrap-vue": "^2.16.0",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
-    "vue-dropdowns": "^1.1.2"
+    "vue-dropdowns": "^1.1.2",
+    "vue-html2pdf": "^1.8.0",
+    "vue-router": "^4.2.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^5.0.8",

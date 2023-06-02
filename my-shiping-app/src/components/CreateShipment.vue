@@ -40,14 +40,36 @@
             </form>
         </div>
     </div>
+    <div style="padding-top: 2%;padding-bottom: 2%;" v-if="this.error == true">
+    <AlertBox>
+      {{ errorText }} 
+      <br/>
+      {{ errorTextDetail }}
+      <div style="font-weight: bold;">
+        {{ errorTextDetail2 }}
+      </div>
+    </AlertBox>
     </div>
+  </div>
+
 </template>
 
 <script>
+
+import { getCurrentStock } from '../services/ShipmentService'
+import AlertBox from './AlertBox.vue'
+
 export default {
+  components: { AlertBox },
+
   name: 'CreateShipment',
   data() {
     return {
+      error: false,
+      errorText: '',
+      errorTextDetail: '',
+      errorTextDetail2: '',
+      currentStock: [],
       invNo: '',
       date: '',
       item: '',
@@ -75,6 +97,13 @@ export default {
 
       createShipment() {
           console.log(this.id)
+          let valid = false;
+          this.errorText = '';
+          this.errorTextDetail = '';
+          this.errorTextDetail2 = '';
+          this.error = false;
+
+          if(this.checkStockBeforeCreatingShipment(valid) == true){
           const payload = {
               id: this.id,
               date: this.date,
@@ -86,6 +115,11 @@ export default {
           }
           this.$emit('createShipment', payload)
           this.clearForm();
+        } else{
+          this.error = true;
+          this.errorTextDetail2 += "Shipment is NOT created!";
+          this.clearForm();
+        }
       },
       clearForm() {
           this.invNo = "";
@@ -132,8 +166,41 @@ export default {
         
         console.log(itemName);
         console.log(defaultQty);
-      }
+      },
+
+    checkStockBeforeCreatingShipment(valid){
+    valid = false;
+    this.getCurrentStock();
+    console.log('currentStock ' + JSON.stringify(this.currentStock));
+    const itemFromStock = this.currentStock.find(element => element.item == this.item);
+    console.log('item found: ' + JSON.stringify(itemFromStock));
+    if(itemFromStock == undefined){
+      this.errorText += "No Stock for this item!";
+    } else if(itemFromStock.qty >= this.qty){
+      console.log("qty from stock: " + itemFromStock.qty + " is greater than qty from shipment" + this.qty + ' check passed... valid = true');
+      valid = true;
+      console.log('valid is ' + valid);
+      } else {
+        this.errorText += "Not enough stock to create shipment!";
+        this.errorTextDetail += ' Requested item: ' + this.item;
+        this.errorTextDetail += ' Requested quantity: ' + this.qty;
+    }
+
+    return valid;
+  },
+
+  getCurrentStock() {
+      getCurrentStock().then(response => {
+        console.log(response)
+        this.currentStock = response
+      })
+    }
+
+  },
+
+  mounted () {
+    this.getCurrentStock();
   }
+
 }
 </script>
-

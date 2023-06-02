@@ -7,6 +7,8 @@ const app = express(),
 
 // place holder for the deliveries
 const deliveries = [];
+// place holder for the shipments
+const shipments = [];
 
 // Current Stock 
 const stock = [];
@@ -28,8 +30,6 @@ function addToStock(itemToAdd){
 }
 
 function findItem(itemToFind,stock){
-  console.log("I'm in [findItem]")
-  const breakPoint = stock.length;
 
   //UPDATE
   stock.forEach(el => {
@@ -48,12 +48,8 @@ function findItem(itemToFind,stock){
   }
 }
 
-app.use(bodyParser.json());
-app.use(express.static(process.cwd() + '/my-app/dist'));
-
-cron.schedule("*/15 * * * * *", function () {
-  console.log("---------------------");
-  console.log("running a task every 15 second");
+function processDeliveries(){
+  //Process available Deliveries
   deliveries.forEach(element => {
     if(element.status == "NEW" && element.invNo != "" && 
       element.item != ""  && element.qty > 0  && element.supplier != ""){
@@ -61,7 +57,8 @@ cron.schedule("*/15 * * * * *", function () {
       console.log("item to approve: " + element.item);
       const stockElement = {item: element.item, qty: Number(element.qty)};
       console.log("StockElement to add: " + JSON.stringify(stockElement));
-
+      
+      //Puts items from deliveries to stock
       addToStock(stockElement);
     }else if(element.status == "APPROVED"){
       console.log("Order "+element.invNo + " is OK")
@@ -69,16 +66,64 @@ cron.schedule("*/15 * * * * *", function () {
       element.status = "DENIED";
     }
   });
+}
+
+//Process new shipment and modify stock
+function processNewShipment(shipment){
+
+  //Modify stock
+  stock.forEach(el => {
+    console.log("Stock: " + el.item);
+    console.log("Element: " + shipment.item);
+    if (shipment.item === el.item) {
+      console.log("I'm going to Update" + JSON.stringify(el));
+        if (el.qty - shipment.qty >= 0) {
+          el.qty -= shipment.qty; 
+          console.log("updated stock => item: " + el.item + " qty: " + el.qty);
+
+          //Change status of shipment
+          shipment.status = "REGISTERED";
+
+          //Put away current shipment on stack
+          shipments.push(shipment);
+        } else {
+            //Change status of shipment
+            shipment.status = "FAULTY";
+
+            //Put away current shipment on stack
+            shipments.push(shipment);
+            console.log("Oh shoot! Something bad happended!")
+        }
+    }
+  })
+}
+
+//Process of shipment approval
+function processShipments(){
+  shipments.forEach(element => {
+    if(element.status == "REGISTERED"){
+      element.status = "APPROVED"
+      console.log("Shipment "+element.invNo + " is APPROVED")
+    }
+  })
+}
+
+
+app.use(bodyParser.json());
+app.use(express.static(process.cwd() + '/my-app/dist'));
+
+cron.schedule("*/15 * * * * *", function () {
+  console.log("---------------------");
+  console.log("running a task every 15 second");
+  processDeliveries();
+  processShipments();
 });
 
+//REST API
+//RECEIVING
 app.get('/api/deliveries', (req, res) => {
   console.log('api/deliveries called!!!!!!!')
   res.json(deliveries);
-});
-
-app.get('/api/stock', (req, res) => {
-  console.log('api/stock called!!!!!!!')
-  res.json(stock);
 });
 
 app.post('/api/delivery', (req, res) => {
@@ -87,6 +132,26 @@ app.post('/api/delivery', (req, res) => {
   console.log('Adding delivery:::::', delivery);
   deliveries.push(delivery);
   res.json("delivery addedd");
+});
+
+//SHIPPING
+app.get('/api/shipments', (req, res) => {
+  console.log('api/shipments called!!!!!!!')
+  res.json(shipments);
+});
+
+app.post('/api/shipment', (req, res) => {
+  const shipment = req.body.shipment;
+  shipment.id = randomId(10);
+  console.log('Adding shipment:::::', shipment);
+  processNewShipment(shipment);
+  res.json("shipment addedd");
+});
+
+//STOCK
+app.get('/api/stock', (req, res) => {
+  console.log('api/stock called!!!!!!!')
+  res.json(stock);
 });
 
 app.get('/', (req,res) => {

@@ -15,10 +15,10 @@
           </div>
     </div>
     <div class="row mrgnbtm">
-        <Shipments v-if="shipments.length > 0" :shipments="shipments" />
+        <CurrentStock v-if="currentStock.length > 0" :currentStock="currentStock" />
     </div>
     <div class="row mrgnbtm">
-        <CurrentStock v-if="currentStock.length > 0" :currentStock="currentStock" />
+        <Shipments v-if="shipments.length > 0" :shipments="shipments" />
     </div>
   </div>
 </template>
