@@ -5,36 +5,109 @@ const app = express(),
       bodyParser = require("body-parser");
       port = 3070;
 
-// place holder for the data
-const deliveries = [
-  {
-    id: "1",
-    date: "2021-01-22",
-    invNo: "SA0U125",
-    supplier: "Masey",
-    item: "Bulgulator",
-    qty: "123",
-    status: "APPROVED"
-  },
-  {
-    id: "2",
-    date: "2022-03-12",
-    invNo: "3Q25FE2",
-    supplier: "Pinkey",
-    item: "Bulgotnica",
-    qty: "987",
-    status: "APPROVED"
-  },
-  {
-    id: "3",
-    date: "2023-04-15",
-    invNo: "AGSOQ2",
-    supplier: "Miney",
-    item: "Workownica",
-    qty: "235",
-    status: "APPROVED"
+// place holder for the deliveries
+const deliveries = [];
+// place holder for the shipments
+const shipments = [];
+
+// Current Stock 
+const stock = [];
+
+function addToStock(itemToAdd){
+  const item = itemToAdd.item;
+  const qty = itemToAdd.qty;
+  console.log("I'm in [addToStock]");
+  console.log("stock list length: "+ stock.length);
+  console.log("element:" + item + " " + qty);
+  console.log("current stock list: " + JSON.stringify(stock));
+  
+  if(stock.length === 0){
+    stock.push(itemToAdd);
+    console.log("created stock => item: " + stock[0].item + " qty: " + stock[0].qty);
+  } else {
+    findItem(itemToAdd,stock);
   }
-];
+}
+
+function findItem(itemToFind,stock){
+
+  //UPDATE
+  stock.forEach(el => {
+    console.log("Stock: " + el.item);
+    console.log("Element: " + itemToFind.item);
+    if(itemToFind.item === el.item){
+      console.log("I'm going to Update" + JSON.stringify(el));
+      el.qty += itemToFind.qty; 
+      console.log("updated stock => item: " + el.item + " qty: " + el.qty);
+    }
+  })
+
+  //NEW
+  if(!stock.find(element => element.item === itemToFind.item)){
+    stock.push(itemToFind);
+  }
+}
+
+function processDeliveries(){
+  //Process available Deliveries
+  deliveries.forEach(element => {
+    if(element.status == "NEW" && element.invNo != "" && 
+      element.item != ""  && element.qty > 0  && element.supplier != ""){
+      element.status = "APPROVED"
+      console.log("item to approve: " + element.item);
+      const stockElement = {item: element.item, qty: Number(element.qty)};
+      console.log("StockElement to add: " + JSON.stringify(stockElement));
+      
+      //Puts items from deliveries to stock
+      addToStock(stockElement);
+    }else if(element.status == "APPROVED"){
+      console.log("Order "+element.invNo + " is OK")
+    } else{
+      element.status = "DENIED";
+    }
+  });
+}
+
+//Process new shipment and modify stock
+function processNewShipment(shipment){
+
+  //Modify stock
+  stock.forEach(el => {
+    console.log("Stock: " + el.item);
+    console.log("Element: " + shipment.item);
+    if (shipment.item === el.item) {
+      console.log("I'm going to Update" + JSON.stringify(el));
+        if (el.qty - shipment.qty >= 0) {
+          el.qty -= shipment.qty; 
+          console.log("updated stock => item: " + el.item + " qty: " + el.qty);
+
+          //Change status of shipment
+          shipment.status = "REGISTERED";
+
+          //Put away current shipment on stack
+          shipments.push(shipment);
+        } else {
+            //Change status of shipment
+            shipment.status = "FAULTY";
+
+            //Put away current shipment on stack
+            shipments.push(shipment);
+            console.log("Oh shoot! Something bad happended!")
+        }
+    }
+  })
+}
+
+//Process of shipment approval
+function processShipments(){
+  shipments.forEach(element => {
+    if(element.status == "REGISTERED"){
+      element.status = "APPROVED"
+      console.log("Shipment "+element.invNo + " is APPROVED")
+    }
+  })
+}
+
 
 app.use(bodyParser.json());
 app.use(express.static(process.cwd() + '/my-app/dist'));
@@ -42,18 +115,12 @@ app.use(express.static(process.cwd() + '/my-app/dist'));
 cron.schedule("*/15 * * * * *", function () {
   console.log("---------------------");
   console.log("running a task every 15 second");
-  deliveries.forEach(element => {
-    if(element.status == "NEW" && element.invNo != "" && 
-      element.item != ""  && element.qty > 0  && element.supplier != ""){
-      element.status = "APPROVED"
-    }else if(element.status == "APPROVED"){
-      console.log("Order "+element.invNo + " is OK")
-    } else{
-      element.status = "DENIED";
-    }
-  });
+  processDeliveries();
+  processShipments();
 });
 
+//REST API
+//RECEIVING
 app.get('/api/deliveries', (req, res) => {
   console.log('api/deliveries called!!!!!!!')
   res.json(deliveries);
@@ -65,6 +132,26 @@ app.post('/api/delivery', (req, res) => {
   console.log('Adding delivery:::::', delivery);
   deliveries.push(delivery);
   res.json("delivery addedd");
+});
+
+//SHIPPING
+app.get('/api/shipments', (req, res) => {
+  console.log('api/shipments called!!!!!!!')
+  res.json(shipments);
+});
+
+app.post('/api/shipment', (req, res) => {
+  const shipment = req.body.shipment;
+  shipment.id = randomId(10);
+  console.log('Adding shipment:::::', shipment);
+  processNewShipment(shipment);
+  res.json("shipment addedd");
+});
+
+//STOCK
+app.get('/api/stock', (req, res) => {
+  console.log('api/stock called!!!!!!!')
+  res.json(stock);
 });
 
 app.get('/', (req,res) => {

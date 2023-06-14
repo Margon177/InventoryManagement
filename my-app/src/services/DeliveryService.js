@@ -6,6 +6,12 @@ export async function getAllDeliveries() {
     return response.data;
 }
 
+export async function getCurrentStock() {
+
+    const response = await axios.get('/api/stock');
+    return response.data;
+}
+
 export async function createDelivery(data) {
     const response = await axios.post(`/api/delivery`, {delivery: data});
     return response.data;

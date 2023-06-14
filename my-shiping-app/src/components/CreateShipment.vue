@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
         <div class="col-md-7 mrgnbtm">
-        <h2>Create Delivery</h2>
+        <h2>Create Shipment</h2>
             <form>
                 <div class="row">
                     <div class="form-group col-md-6">
@@ -11,15 +11,15 @@
                     </div>
                     
                     <div class="form-group col-md-6">
-                        <label htmlFor="exampleInputPassword1">Delivery Date</label>
-                        <input type="date" class="form-control" v-model="date" name="date" id="date" placeholder="Delivery Date" />
+                        <label htmlFor="exampleInputPassword1">Shipment Date</label>
+                        <input type="date" class="form-control" v-model="date" name="date" id="date" placeholder="Shipment Date" />
                     </div>
                     
                 </div>
                 <div class="row">
                     <div class="form-group col-md-6">
-                        <label htmlFor="exampleInputEmail1">Supplier Code</label>
-                        <input type="text" class="form-control" v-model="supplier" name="supplier" id="supplier" aria-describedby="emailHelp" placeholder="Supplier Code" />
+                        <label htmlFor="exampleInputEmail1">Customer Code</label>
+                        <input type="text" class="form-control" v-model="customer" name="customer" id="customer" aria-describedby="emailHelp" placeholder="Customer Code" />
                     </div>
                     <div class="form-group col-md-6">
                     <label htmlFor="items">Item Name</label>
@@ -36,23 +36,45 @@
                         <input type="number" class="form-control" v-model="qty" name="qty" id="qty" aria-describedby="emailHelp" placeholder="Quantity"/>
                     </div>
                 </div>
-                <button type="button" @click='createDelivery()' class="btn btn-danger">Create</button>
+                <button type="button" @click='createShipment()' class="btn btn-danger">Create</button>
             </form>
         </div>
     </div>
+    <div style="padding-top: 2%;padding-bottom: 2%;" v-if="this.error == true">
+    <AlertBox>
+      {{ errorText }} 
+      <br/>
+      {{ errorTextDetail }}
+      <div style="font-weight: bold;">
+        {{ errorTextDetail2 }}
+      </div>
+    </AlertBox>
     </div>
+  </div>
+
 </template>
 
 <script>
+
+import { getCurrentStock } from '../services/ShipmentService'
+import AlertBox from './AlertBox.vue'
+
 export default {
-  name: 'CreateDelivery',
+  components: { AlertBox },
+
+  name: 'CreateShipment',
   data() {
     return {
+      error: false,
+      errorText: '',
+      errorTextDetail: '',
+      errorTextDetail2: '',
+      currentStock: [],
       invNo: '',
       date: '',
       item: '',
       selectedValue: '',
-      supplier: '',
+      customer: '',
       qty: '',
       status: '',
       arrayOfItems: [ {
@@ -73,25 +95,37 @@ export default {
 
   methods: {
 
-      createDelivery() {
+      createShipment() {
           console.log(this.id)
+          let valid = false;
+          this.errorText = '';
+          this.errorTextDetail = '';
+          this.errorTextDetail2 = '';
+          this.error = false;
+
+          if(this.checkStockBeforeCreatingShipment(valid) == true){
           const payload = {
               id: this.id,
               date: this.date,
               invNo: this.invNo,
-              supplier: this.supplier,
+              customer: this.customer,
               item: this.item,
               qty: this.qty,
               status: "NEW"
           }
-          this.$emit('createDelivery', payload)
+          this.$emit('createShipment', payload)
           this.clearForm();
+        } else{
+          this.error = true;
+          this.errorTextDetail2 += "Shipment is NOT created!";
+          this.clearForm();
+        }
       },
       clearForm() {
           this.invNo = "";
           this.date = "";
           this.item = "";
-          this.supplier = "";
+          this.customer = "";
           this.qty = 0;
           this.status = "";
           this.selectedValue = "";
@@ -132,8 +166,41 @@ export default {
         
         console.log(itemName);
         console.log(defaultQty);
-      }
+      },
+
+    checkStockBeforeCreatingShipment(valid){
+    valid = false;
+    this.getCurrentStock();
+    console.log('currentStock ' + JSON.stringify(this.currentStock));
+    const itemFromStock = this.currentStock.find(element => element.item == this.item);
+    console.log('item found: ' + JSON.stringify(itemFromStock));
+    if(itemFromStock == undefined){
+      this.errorText += "No Stock for this item!";
+    } else if(itemFromStock.qty >= this.qty){
+      console.log("qty from stock: " + itemFromStock.qty + " is greater than qty from shipment" + this.qty + ' check passed... valid = true');
+      valid = true;
+      console.log('valid is ' + valid);
+      } else {
+        this.errorText += "Not enough stock to create shipment!";
+        this.errorTextDetail += ' Requested item: ' + this.item;
+        this.errorTextDetail += ' Requested quantity: ' + this.qty;
+    }
+
+    return valid;
+  },
+
+  getCurrentStock() {
+      getCurrentStock().then(response => {
+        console.log(response)
+        this.currentStock = response
+      })
+    }
+
+  },
+
+  mounted () {
+    this.getCurrentStock();
   }
+
 }
 </script>
-
