@@ -14,8 +14,9 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-dropdowns": "^1.1.2",
-    "vue-html2pdf": "^1.8.0",
-    "vue-router": "^4.2.2"
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.29"
+
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^5.0.8",
