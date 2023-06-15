@@ -24,11 +24,12 @@
                     <div class="form-group col-md-6">
                     <label htmlFor="items">Item Name</label>
                     <select id="items" v-model="selectedValue" class="form-control" @change="chooseItem($event)">
-                        <option v-for="item in arrayOfItems" :key="item.id" :value="item.id">
+                        <option v-for="item in arrayOfItems" :key="item.name" :value="item.name">
                             {{ item.name }}
                         </option>
                     </select>
                     </div>
+                    <button type="button" @click='refreshConfig()' class="btn btn-info">Refresh Items</button>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-12">
@@ -44,6 +45,9 @@
 </template>
 
 <script>
+
+import { getConfig } from '../services/DeliveryService'
+
 export default {
   name: 'CreateDelivery',
   data() {
@@ -55,38 +59,34 @@ export default {
       supplier: '',
       qty: '',
       status: '',
-      arrayOfItems: [ {
-                id: 1,
-              name: 'Bulbulator',
-              defaultQty: 100
-            } , {
-                id: 2,
-              name: 'Wyrzymator',
-              defaultQty: 200
-            } , {
-                id: 3,
-              name: 'Kaputator',
-              defaultQty: 300
-            }, ]
+      arrayOfItems: ''
     }
   },
 
   methods: {
 
-      createDelivery() {
-          console.log(this.id)
-          const payload = {
-              id: this.id,
-              date: this.date,
-              invNo: this.invNo,
-              supplier: this.supplier,
-              item: this.item,
-              qty: this.qty,
-              status: "NEW"
+    refreshConfig() {
+      getConfig().then(response => {
+        console.log(response)
+        this.arrayOfItems = response
+      })
+      },   
+
+    createDelivery() {
+      console.log(this.id)
+      const payload = {
+          id: this.id,
+          date: this.date,
+          invNo: this.invNo,
+          supplier: this.supplier,
+          item: this.item,
+          qty: this.qty,
+          status: "NEW"
           }
           this.$emit('createDelivery', payload)
           this.clearForm();
       },
+      
       clearForm() {
           this.invNo = "";
           this.date = "";
@@ -99,19 +99,7 @@ export default {
 
       chooseItem(event){
 
-        let arrayOfItems = [ {
-                id: 1,
-              name: 'Bulbulator',
-              defaultQty: 100
-            } , {
-                id: 2,
-              name: 'Wyrzymator',
-              defaultQty: 200
-            } , {
-                id: 3,
-              name: 'Kaputator',
-              defaultQty: 300
-            }, ]
+        let arrayOfItems = this.arrayOfItems;
 
         console.log(event.target.value);
         let selectedItem = event.target.value;
