@@ -9,7 +9,9 @@
                 <th>Invoice No</th>
                 <th>Customer</th>
                 <th>Item</th>
+                <th>Price Per Item</th>
                 <th>Quantity</th>
+                <th>Total Price</th>
                 <th>Status</th>
             </tr>
             </thead>
@@ -20,7 +22,9 @@
                   <td>{{ item.invNo }}</td>
                   <td>{{ item.customer }}</td>
                   <td>{{ item.item }}</td>
+                  <td>{{ item.price }}</td>
                   <td>{{ item.qty }}</td>
+                  <td>{{ item.totalPrice }}</td>
                   <td>{{ item.status }}</td>
                   <td v-if= "item.status == 'APPROVED'" align ='center'>
                     <button @click='generatePDF(item)'>
@@ -47,7 +51,7 @@ export default {
 data() {
     return {
       heading: "Generated Invoice for Order no: ",
-      moreText: ["If you have any questions about this invoice please do not contact anybody and pay the requested amount now. Cheers!"]
+      moreText: ["It's not a scam! If you have any questions about this invoice please do not contact anybody and pay the requested amount now. Cheers!"]
     }
 },
 
@@ -62,7 +66,9 @@ methods: {
         {title:"Invoice Number", body:item.invNo},
         {title:"Shipping Date",  body:item.date},
         {title:"Item", body:item.item},
-        {title:"Quantity", body:item.qty}
+        {title:"Quantity", body:item.qty},
+        {title:"Price Per Item", body:item.price},
+        {title:"Total Price", body:item.totalPrice}
      ];
      
       const doc = new jsPDF({
@@ -80,11 +86,13 @@ methods: {
         body: dataToPrint,
         margin: { left: 0.5, top: 1.25 }
       });
+
+      doc.setLineWidth(0.01).line(0.5, 5, 8.0, 5);
       // Using array of sentences
       doc
         .setFont("arial")
         .setFontSize(12)
-        .text(this.moreText, 0.5, 3.5, { align: "left", maxWidth: "7.5" });
+        .text(this.moreText, 0.5, 5.5, { align: "left", maxWidth: "7.5" });
       
       // Creating footer and saving file
       doc

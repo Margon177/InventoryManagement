@@ -16,3 +16,9 @@ export async function createDelivery(data) {
     const response = await axios.post(`/api/delivery`, {delivery: data});
     return response.data;
 }
+
+export async function getConfig() {
+
+    const response = await axios.get(`/api/configurations`);
+    return response.data;
+}

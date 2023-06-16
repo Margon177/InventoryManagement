@@ -17,26 +17,52 @@
                     
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <label htmlFor="exampleInputEmail1">Customer Code</label>
                         <input type="text" class="form-control" v-model="customer" name="customer" id="customer" aria-describedby="emailHelp" placeholder="Customer Code" />
                     </div>
-                    <div class="form-group col-md-6">
-                    <label htmlFor="items">Item Name</label>
-                    <select id="items" v-model="selectedValue" class="form-control" @change="chooseItem($event)">
-                        <option v-for="item in arrayOfItems" :key="item.id" :value="item.id">
-                            {{ item.name }}
-                        </option>
-                    </select>
-                    </div>
                 </div>
+                    <div class="row">
+                      <div class="form-group col-md-10">
+                        <label htmlFor="items">Item Name</label>
+                          <select id="items" v-model="selectedValue" class="form-control" @change="chooseItem($event)">
+                            <option v-for="item in arrayOfItems" :key="item.name" :value="item.name">
+                              {{ item.name }}
+                            </option>
+                          </select>
+                      </div>
+                      <div class="form-group col-md-2">
+                        <button type="button" @click='refreshConfig()' class="btn btn-info">
+                            Refresh Items
+                        </button>
+                      </div>
+                  </div>
                 <div class="row">
                     <div class="form-group col-md-12">
                         <label htmlFor="exampleInputEmail1">Quantity</label>
                         <input type="number" class="form-control" v-model="qty" name="qty" id="qty" aria-describedby="emailHelp" placeholder="Quantity"/>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label htmlFor="exampleInputEmail1">Price</label>
+                        <input type="number" class="form-control" v-model="price" name="price" id="price" aria-describedby="emailHelp" placeholder="Price"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-10">
+                        <label htmlFor="exampleInputEmail1">Total Price</label>
+                        <input type="number" class="form-control" v-model="totalPrice" name="totalPrice" id="totalPrice" aria-describedby="emailHelp" placeholder="Total Price"/>
+                    </div>
+                    <div class="form-group col-md-2">
+                    <button type="button" @click='recalculate()' class="btn btn-info">
+                      Calculate
+                    </button>
+                  </div>
+                </div>
+                <div class="row ">
                 <button type="button" @click='createShipment()' class="btn btn-danger">Create</button>
+                </div>
             </form>
         </div>
     </div>
@@ -56,7 +82,7 @@
 
 <script>
 
-import { getCurrentStock } from '../services/ShipmentService'
+import { getCurrentStock , getConfig } from '../services/ShipmentService'
 import AlertBox from './AlertBox.vue'
 
 export default {
@@ -77,23 +103,26 @@ export default {
       customer: '',
       qty: '',
       status: '',
-      arrayOfItems: [ {
-                id: 1,
-              name: 'Bulbulator',
-              defaultQty: 100
-            } , {
-                id: 2,
-              name: 'Wyrzymator',
-              defaultQty: 200
-            } , {
-                id: 3,
-              name: 'Kaputator',
-              defaultQty: 300
-            }, ]
+      arrayOfItems: '',
+      price: '',
+      totalPrice: ''
     }
   },
 
   methods: {
+
+    refreshConfig() {
+      getConfig().then(response => {
+        console.log(response)
+        this.arrayOfItems = response
+      })
+      },   
+    
+      recalculate(){
+        console.log("Calculate qty * price (qty) " + this.qty + " (price) " + this.price);
+        this.totalPrice = this.qty*this.price;
+        console.log("total price is: " + this.totalPrice);
+      },
 
       createShipment() {
           console.log(this.id)
@@ -111,6 +140,8 @@ export default {
               customer: this.customer,
               item: this.item,
               qty: this.qty,
+              price: this.price,
+              totalPrice: this.totalPrice,
               status: "NEW"
           }
           this.$emit('createShipment', payload)
@@ -129,41 +160,35 @@ export default {
           this.qty = 0;
           this.status = "";
           this.selectedValue = "";
+          this.price = 0;
       },
 
       chooseItem(event){
-
-        let arrayOfItems = [ {
-                id: 1,
-              name: 'Bulbulator',
-              defaultQty: 100
-            } , {
-                id: 2,
-              name: 'Wyrzymator',
-              defaultQty: 200
-            } , {
-                id: 3,
-              name: 'Kaputator',
-              defaultQty: 300
-            }, ]
-
         console.log(event.target.value);
         let selectedItem = event.target.value;
         console.log(selectedItem);
 
-        const found = arrayOfItems.find((item) => {
-        return item.id == selectedItem;
+        const found = this.arrayOfItems.find((item) => {
+        return item.name == selectedItem;
         });
 
         console.log(found);
         
         let itemName = found.name;
-        let defaultQty = found.defaultQty
+        let defaultQty = found.defaultQty;
+        let price = found.price;
 
         this.item = itemName;
         this.qty = defaultQty;
+
+        console.log('item qty:' + this.item.qty);
+        console.log('item price:' + price);
+
+        this.price = price;
+
+        this.totalPrice = price * this.qty;
   
-        
+  
         console.log(itemName);
         console.log(defaultQty);
       },
@@ -195,7 +220,6 @@ export default {
         this.currentStock = response
       })
     }
-
   },
 
   mounted () {

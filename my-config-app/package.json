@@ -1,5 +1,5 @@
 {
-  "name": "my-shipping-app",
+  "name": "my-config-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,10 +13,7 @@
     "bootstrap-vue": "^2.16.0",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
-    "vue-dropdowns": "^1.1.2",
-    "jspdf": "^2.5.1",
-    "jspdf-autotable": "^3.5.29"
-
+    "vue-dropdowns": "^1.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^5.0.8",

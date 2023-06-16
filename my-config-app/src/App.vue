@@ -11,7 +11,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Dashboard from './components/Dashboard.vue'
 
 export default {
-  name: 'Shipment Panel',
+  name: 'Configuration Panel',
   components: {
     Dashboard
   },
