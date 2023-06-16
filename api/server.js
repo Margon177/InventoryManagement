@@ -7,11 +7,16 @@ const app = express(),
 
 // place holder for the deliveries
 const deliveries = [];
+
 // place holder for the shipments
 const shipments = [];
 
 // Current Stock 
 const stock = [];
+
+//Configurations
+let configurations = [];
+
 
 function addToStock(itemToAdd){
   const item = itemToAdd.item;
@@ -108,10 +113,16 @@ function processShipments(){
   })
 }
 
+//Receive new config
+function processNewConfig(config){
+  configurations = config;
+}
+
 
 app.use(bodyParser.json());
 app.use(express.static(process.cwd() + '/my-app/dist'));
 
+//setup cron schedule
 cron.schedule("*/15 * * * * *", function () {
   console.log("---------------------");
   console.log("running a task every 15 second");
@@ -126,6 +137,8 @@ app.get('/api/deliveries', (req, res) => {
   res.json(deliveries);
 });
 
+//RECEIVING
+//SENDING
 app.post('/api/delivery', (req, res) => {
   const delivery = req.body.delivery;
   delivery.id = randomId(10);
@@ -135,11 +148,13 @@ app.post('/api/delivery', (req, res) => {
 });
 
 //SHIPPING
+//SENDING
 app.get('/api/shipments', (req, res) => {
   console.log('api/shipments called!!!!!!!')
   res.json(shipments);
 });
 
+//RECEIVING
 app.post('/api/shipment', (req, res) => {
   const shipment = req.body.shipment;
   shipment.id = randomId(10);
@@ -149,10 +164,28 @@ app.post('/api/shipment', (req, res) => {
 });
 
 //STOCK
+//RECEIVING
 app.get('/api/stock', (req, res) => {
   console.log('api/stock called!!!!!!!')
   res.json(stock);
 });
+
+//CONFIGURATIONS
+//RECEIVING
+app.post('/api/newConfig', (req, res) => {
+  console.log(JSON.stringify(req.body.configurations));
+  const config = req.body.configurations;
+  console.log('Adding config:::::', JSON.stringify(config));
+  processNewConfig(config);
+  res.json("config addedd");
+});
+
+//SENDING
+app.get('/api/configurations', (req, res) => {
+  console.log('api/configurations called!!!!!!!')
+  res.json(configurations);
+});
+
 
 app.get('/', (req,res) => {
   res.sendFile(process.cwd() + '/my-app/dist/index.html');

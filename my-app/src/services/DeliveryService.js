@@ -19,6 +19,6 @@ export async function createDelivery(data) {
 
 export async function getConfig() {
 
-    const response = await axios.get(`/my-config-app`);
+    const response = await axios.get(`/api/configurations`);
     return response.data;
 }

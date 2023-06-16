@@ -4,19 +4,20 @@
     <div class="container mrgnbtm">
           <div class="row">
             <div class="col-md-8">
-                <CreateConfig @createConfiguration ="createConfiguration($event)" />
+                <CreateConfig @createConfiguration ="createConfiguration($event)" />   
             </div>
-            </div>
+          </div>
             <div class="row mrgnbtm">
               <div class="col-md-8">
-              <button type="button" @click='send()' class="btn btn-danger">
+            <button type="button" @click='send()' class="btn btn-danger">
                 Send Configurations
               </button>
             </div>
+            </div>
+          
             <div class="row mrgnbtm">
               <Configurations v-if="configurations.length > 0" :configurations="configurations" />
             </div>
-          </div>
     </div>
   </div>
 </template>

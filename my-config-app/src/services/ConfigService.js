@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 export async function sendConfig(data) {
-    const response = await axios.post(`/my-app`, {config: data});
+    console.log(data);
+    const response = await axios.post(`/api/newConfig`, {configurations: data});
     return response.data;
 }

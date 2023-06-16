@@ -16,3 +16,9 @@ export async function createShipment(data) {
     const response = await axios.post(`/api/shipment`, {shipment: data});
     return response.data;
 }
+
+export async function getConfig() {
+
+    const response = await axios.get(`/api/configurations`);
+    return response.data;
+}

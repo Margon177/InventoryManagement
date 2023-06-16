@@ -14,6 +14,10 @@
                         <label htmlFor="exampleInputPassword1">Default Quantity</label>
                         <input type="number" class="form-control" v-model="defaultQty" name="defaultQty" id="defaultQty" placeholder="Default Quantity" />
                     </div>
+                    <div class="form-group col-md-6">
+                        <label htmlFor="exampleInputPassword1">Price</label>
+                        <input type="number" class="form-control" v-model="price" name="price" id="price" placeholder="Price" />
+                    </div>
                 </div>
                 <button type="button" @click='createConfiguration()' class="btn btn-danger">Create</button>
             </form>
@@ -30,7 +34,8 @@ export default {
   data() {
     return {
       name: '',
-      defaultQty: ''
+      defaultQty: '',
+      price: ''
     }
   },
 
@@ -39,7 +44,8 @@ export default {
           console.log(this.id)
           const payload = {
               name: this.name,
-              defaultQty: this.defaultQty
+              defaultQty: this.defaultQty,
+              price: this.price
           }
           this.$emit('createConfiguration', payload)
           this.clearForm();
@@ -48,6 +54,7 @@ export default {
       clearForm() {
          this.name = '';
          this.defaultQty ='';
+         this.price ='';
       }
   }
 }
