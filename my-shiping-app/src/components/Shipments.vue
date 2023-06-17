@@ -67,8 +67,8 @@ methods: {
         {title:"Shipping Date",  body:item.date},
         {title:"Item", body:item.item},
         {title:"Quantity", body:item.qty},
-        {title:"Price Per Item", body:item.price},
-        {title:"Total Price", body:item.totalPrice}
+        {title:"Price Per Item", body:item.price + ' EUR'},
+        {title:"Total Price", body:item.totalPrice + ' EUR'}
      ];
      
       const doc = new jsPDF({
