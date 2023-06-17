@@ -6,6 +6,8 @@
             <tr>
                 <th>Item Name</th>
                 <th>Default Quantity</th>
+                <th>Default Supplier</th>
+                <th>Default Customer</th>
                 <th>Price</th>
             </tr>
             </thead>
@@ -13,6 +15,8 @@
               <tr v-for="item in configurations" :key="item.id">
                   <td>{{ item.name }}</td>
                   <td>{{ item.defaultQty }}</td>
+                  <td>{{ item.defaultSupplier }}</td>
+                  <td>{{ item.defaultCustomer }}</td>
                   <td>{{ item.price }}</td>
                   <td>
                     <button @click='removeConfig(item)' class="btn btn-danger">

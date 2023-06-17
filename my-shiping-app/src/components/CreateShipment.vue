@@ -7,19 +7,22 @@
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label htmlFor="exampleInputPassword1">Invoice No</label>
-                        <input type="text" class="form-control" v-model="invNo" name="invNo" id="invNo" placeholder="Invoice Number" />
+                        <input type="text" class="form-control" v-model="invNo" 
+                        name="invNo" id="invNo" placeholder="Invoice Number" />
                     </div>
                     
                     <div class="form-group col-md-6">
                         <label htmlFor="exampleInputPassword1">Shipment Date</label>
-                        <input type="date" class="form-control" v-model="date" name="date" id="date" placeholder="Shipment Date" />
+                        <input type="date" class="form-control" v-model="date" 
+                        name="date" id="date" placeholder="Shipment Date" />
                     </div>
                     
                 </div>
                 <div class="row">
                     <div class="form-group col-md-12">
                         <label htmlFor="exampleInputEmail1">Customer Code</label>
-                        <input type="text" class="form-control" v-model="customer" name="customer" id="customer" aria-describedby="emailHelp" placeholder="Customer Code" />
+                        <input type="text" class="form-control" v-model="customer" 
+                        name="customer" id="customer" aria-describedby="emailHelp" placeholder="Customer Code" />
                     </div>
                 </div>
                     <div class="row">
@@ -40,19 +43,22 @@
                 <div class="row">
                     <div class="form-group col-md-12">
                         <label htmlFor="exampleInputEmail1">Quantity</label>
-                        <input type="number" class="form-control" v-model="qty" name="qty" id="qty" aria-describedby="emailHelp" placeholder="Quantity"/>
+                        <input type="number" class="form-control" v-model="qty" 
+                        name="qty" id="qty" aria-describedby="emailHelp" placeholder="Quantity"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-12">
                         <label htmlFor="exampleInputEmail1">Price</label>
-                        <input type="number" class="form-control" v-model="price" name="price" id="price" aria-describedby="emailHelp" placeholder="Price"/>
+                        <input type="number" class="form-control" v-model="price" 
+                        name="price" id="price" aria-describedby="emailHelp" placeholder="Price"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-10">
                         <label htmlFor="exampleInputEmail1">Total Price</label>
-                        <input type="number" class="form-control" v-model="totalPrice" name="totalPrice" id="totalPrice" aria-describedby="emailHelp" placeholder="Total Price"/>
+                        <input type="number" class="form-control" v-model="totalPrice" 
+                        name="totalPrice" id="totalPrice" aria-describedby="emailHelp" placeholder="Total Price"/>
                     </div>
                     <div class="form-group col-md-2">
                     <button type="button" @click='recalculate()' class="btn btn-info">
@@ -177,9 +183,11 @@ export default {
         let itemName = found.name;
         let defaultQty = found.defaultQty;
         let price = found.price;
+        let defaultCustomer = found.defaultCustomer;
 
         this.item = itemName;
         this.qty = defaultQty;
+        this.customer = defaultCustomer;
 
         console.log('item qty:' + this.item.qty);
         console.log('item price:' + price);
@@ -187,6 +195,8 @@ export default {
         this.price = price;
 
         this.totalPrice = price * this.qty;
+
+        this.getCurrentStock();
   
   
         console.log(itemName);

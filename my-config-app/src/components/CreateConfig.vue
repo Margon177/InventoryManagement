@@ -12,11 +12,26 @@
                     
                     <div class="form-group col-md-6">
                         <label htmlFor="exampleInputPassword1">Default Quantity</label>
-                        <input type="number" class="form-control" v-model="defaultQty" name="defaultQty" id="defaultQty" placeholder="Default Quantity" />
+                        <input type="number" class="form-control" v-model="defaultQty" 
+                        name="defaultQty" id="defaultQty" placeholder="Default Quantity" />
                     </div>
+
+                    <div class="form-group col-md-6">
+                        <label htmlFor="exampleInputPassword1">Default Supplier</label>
+                        <input type="text" class="form-control" v-model="defaultSupplier" 
+                        name="defaultSupplier" id="defaultSupplier" placeholder="Default Supplier" />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label htmlFor="exampleInputPassword1">Default Customer</label>
+                        <input type="text" class="form-control" v-model="defaultCustomer" 
+                        name="defaultCustomer" id="defaultCustomer" placeholder="Default Customer" />
+                    </div>
+
                     <div class="form-group col-md-6">
                         <label htmlFor="exampleInputPassword1">Price</label>
-                        <input type="number" class="form-control" v-model="price" name="price" id="price" placeholder="Price" />
+                        <input type="number" class="form-control" v-model="price" 
+                        name="price" id="price" placeholder="Price" />
                     </div>
                 </div>
                 <button type="button" @click='createConfiguration()' class="btn btn-danger">Create</button>
@@ -35,6 +50,8 @@ export default {
     return {
       name: '',
       defaultQty: '',
+      defaultSupplier: '',
+      defaultCustomer: '',
       price: ''
     }
   },
@@ -45,6 +62,8 @@ export default {
           const payload = {
               name: this.name,
               defaultQty: this.defaultQty,
+              defaultSupplier: this.defaultSupplier,
+              defaultCustomer: this.defaultCustomer,
               price: this.price
           }
           this.$emit('createConfiguration', payload)
@@ -54,6 +73,8 @@ export default {
       clearForm() {
          this.name = '';
          this.defaultQty ='';
+         this.defaultCustomer ='';
+         this.defaultSupplier ='';
          this.price ='';
       }
   }

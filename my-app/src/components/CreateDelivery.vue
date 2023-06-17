@@ -7,19 +7,22 @@
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label htmlFor="exampleInputPassword1">Invoice No</label>
-                        <input type="text" class="form-control" v-model="invNo" name="invNo" id="invNo" placeholder="Invoice Number" />
+                        <input type="text" class="form-control" v-model="invNo" 
+                        name="invNo" id="invNo" placeholder="Invoice Number" />
                     </div>
                     
                     <div class="form-group col-md-6">
                         <label htmlFor="exampleInputPassword1">Delivery Date</label>
-                        <input type="date" class="form-control" v-model="date" name="date" id="date" placeholder="Delivery Date" />
+                        <input type="date" class="form-control" v-model="date" 
+                        name="date" id="date" placeholder="Delivery Date" />
                     </div>
                     
                 </div>
                 <div class="row">
                     <div class="form-group col-md-12">
                         <label htmlFor="exampleInputEmail1">Supplier Code</label>
-                        <input type="text" class="form-control" v-model="supplier" name="supplier" id="supplier" aria-describedby="emailHelp" placeholder="Supplier Code" />
+                        <input type="text" class="form-control" v-model="supplier" 
+                        name="supplier" id="supplier" aria-describedby="emailHelp" placeholder="Supplier Code" />
                     </div>
                 </div>
                 <div class="row">
@@ -40,7 +43,8 @@
                 <div class="row">
                     <div class="form-group col-md-12">
                         <label htmlFor="exampleInputEmail1">Quantity</label>
-                        <input type="number" class="form-control" v-model="qty" name="qty" id="qty" aria-describedby="emailHelp" placeholder="Quantity"/>
+                        <input type="number" class="form-control" v-model="qty" 
+                        name="qty" id="qty" aria-describedby="emailHelp" placeholder="Quantity"/>
                     </div>
                 </div>
                 <button type="button" @click='createDelivery()' class="btn btn-danger">Create</button>
@@ -118,10 +122,12 @@ export default {
         console.log('search in array: ' + found);
         
         let itemName = found.name;
-        let defaultQty = found.defaultQty
+        let defaultQty = found.defaultQty;
+        let defaultSupplier = found.defaultSupplier;
 
         this.item = itemName;
         this.qty = defaultQty;
+        this.supplier = defaultSupplier;
   
         
         console.log(itemName);
