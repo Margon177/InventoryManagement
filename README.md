@@ -3,9 +3,10 @@
 This system will be used to register stock deliveries, maintain current stock and register shipments.
 
 ## Cel
-1.Umożliwienie produkcji oraz wysyłania dokumentów sprzedażowych do klientów sklepu AAA
-2.Umożliwienie zarządzania stanem magazynowym
-3.Umożliwienie obsługi zamówień towaru
+1. Umożliwienie produkcji oraz wysyłania dokumentów sprzedażowych do klientów sklepu AAA
+2. Umożliwienie zarządzania stanem magazynowym
+3. Umożliwienie obsługi zamówień towaru
+
 ### Założenia
 1. System będzie pozwalał na zarządzanie posiadanym towarem.
 2. System będzie pozwalał na tworzenie dostaw.
